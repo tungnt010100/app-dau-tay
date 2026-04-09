@@ -130,8 +130,8 @@ class StudentApp(QWidget):
         self.setLayout(layout)
 
     def load_students(self):
-        self.table.setRowCount(0)
-        rows = get_all_students() 
+        self.table.setRowCount(0)#để"xóa"dữ liệu bảng
+        rows = get_all_students() #khi này chỉ thêm ông thứ i,chứ ko thêm các ông 1,2,...,i-1 ,tránh trùng
         for row_data in rows:
             row = self.table.rowCount()
             self.table.insertRow(row)
