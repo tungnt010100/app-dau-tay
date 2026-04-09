@@ -2,7 +2,7 @@ import os
 import winsound
 import sqlite3
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
-
+DB_NAME = "students.db"
 def export_to_excel(data_list, file_path):
     import pandas as pd 
     try:

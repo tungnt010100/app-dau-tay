@@ -3,7 +3,7 @@ import winsound
 import os
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
-
+DB_NAME = "students.db"
 import crud, giaodien, search, sort, role_admin_va_SV, xuat_excel
 
 class MainController:
@@ -26,7 +26,7 @@ class MainController:
         
         self.login_win.close()
         self.main_win.show()
-        winsound.MessageBeep(winsound.MB_OK)
+        winsound.MessageBeep(winsound.MB_OK) 
         self.refresh_table_data()
 
     def connect_main_signals(self):
@@ -40,9 +40,8 @@ class MainController:
 
     def refresh_table_data(self):
         data = crud.get_all_students()
-        # Gọi hàm hiển thị từ file search
         search.display_results_to_table(self.main_win.table, [("NORMAL", r) for r in data])
-
+#Normal chỉ để báo kí hiệu hiển thị ra bình thường
     def handle_search(self):
         query = self.main_win.search_input.text()
         if not query: self.refresh_table_data(); return
@@ -51,7 +50,9 @@ class MainController:
 
     def handle_sort(self):
         criteria = self.main_win.sort_combo.currentText()
-        if criteria == "Sắp xếp": return
+        
+        if "..." in criteria or criteria == "Sắp xếp":
+            return #do sắp xếp chỉ là cái nhãn->ko đc làm gì
         data = sort.get_sorted_students(criteria)
         search.display_results_to_table(self.main_win.table, [("NORMAL", r) for r in data])
 
@@ -64,7 +65,9 @@ class MainController:
 
     def handle_update(self):
         row = self.main_win.table.currentRow()
-        if row < 0: return
+        if row < 0: 
+            QMessageBox.warning(self.main_win, "Lỗi", "Hãy chọn 1 dòng để sửa!")
+            return
         sid = self.main_win.table.item(row, 0).text()
         success, msg = crud.update_student_logic(
             sid, self.main_win.name_input.text(), self.main_win.score_input.text(),
@@ -84,7 +87,6 @@ class MainController:
         current_data = []
         for r in range(self.main_win.table.rowCount()):
             current_data.append([self.main_win.table.item(r, c).text() for c in range(5)])
-            #c tương đương 5 thuộc tính của SV,r là duyệt các SV(hàng)
         xuat_excel.run_export_flow(self.main_win, current_data)
 
     def finalize_crud(self, success, message):

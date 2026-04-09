@@ -11,8 +11,8 @@ FUZZY_THRESHOLD = 72
 def remove_accents_lower(s):
     if not s: return ""
     nfkd_form = normalize('NFKD', s.lower())
-    return "".join([c for c in nfkd_form if not combining(c)]).replace('đ', 'd')#ko phải dấu thì cho cook
-   #thêm NFKD để xử lí trường hợp search đặc biệt
+    return "".join([c for c in nfkd_form if not combining(c)]).replace('đ', 'd')
+
 def search_engine(query):
     query = query.strip().lower()
     if not query: return []
@@ -22,14 +22,12 @@ def search_engine(query):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    # Tìm chính xác ID
     cursor.execute("SELECT * FROM students WHERE id = ?", (query.upper(),))
     exact_id = cursor.fetchone()
     if exact_id:
         conn.close()
         return [("EXACT_ID", exact_id)]
 
-    #Tìm gần đúng Tên
     cursor.execute("SELECT * FROM students")
     all_students = cursor.fetchall()
     conn.close()
@@ -37,17 +35,14 @@ def search_engine(query):
     fuzzy_results = []
     for student in all_students:
         clean_name = remove_accents_lower(student[1])
-        
         score = fuzz.partial_ratio(clean_query, clean_name)
-        
         if score >= FUZZY_THRESHOLD:
             fuzzy_results.append((score, student))
 
-    fuzzy_results.sort(key=lambda x: (-x[0], x[1]))
+    fuzzy_results.sort(key=lambda x: (-x[0], x[1][1]))  
     return [("FUZZY_NAME", item[1]) for item in fuzzy_results]
 
 def display_results_to_table(table_widget, results):
-  
     table_widget.setRowCount(0)
     for tag, data in results:
         row = table_widget.rowCount()

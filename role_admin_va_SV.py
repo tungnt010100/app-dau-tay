@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QColor, QFont
 
+DB_NAME = "students.db"
 def verify_admin_password(password):
     return password == "AloVuphaikhongem?"
 
@@ -24,12 +25,12 @@ class EyeButton(QPushButton):
         self.update_icon()
         
     def update_icon(self):
-        self.setText("👁" if self.is_visible else "🔒") #thứ giúp EyeButton hiểu đc
+        self.setText("👁" if self.is_visible else "🔒") 
     
     def toggle_visibility(self):
-        self.is_visible = not self.is_visible #đảo ngược trạng thái mắt khi ấn nút
+        self.is_visible = not self.is_visible 
         self.update_icon()
-        return self.is_visible #báo cáo mắt "nhắm" hay"mở"
+        return self.is_visible # Báo cáo mắt "nhắm" hay "mở"
 
 class AdminLoginDialog(QDialog):
     def __init__(self, parent=None):
@@ -48,7 +49,7 @@ class AdminLoginDialog(QDialog):
         password_layout = QHBoxLayout()
         self.password_input = QLineEdit()
         self.password_input.setEchoMode(QLineEdit.Password)
-        self.password_input.setStyleSheet("padding: 10px; border: 1px solid #ccc; border-radius: 5px;")#border radius để"cắt"phần nhọn
+        self.password_input.setStyleSheet("padding: 10px; border: 1px solid #ccc; border-radius: 5px;") # Border radius để "cắt" phần nhọn
         
         self.eye_button = EyeButton()
         self.eye_button.clicked.connect(self.toggle_password_visibility)
@@ -67,11 +68,11 @@ class AdminLoginDialog(QDialog):
                 padding-left: 15px;    /* Cách trái 15px */
                 padding-right: 15px;   /* Cách phải 15px */
                 
-                border-radius: 4px;    /*bo góc*/
-                border: 2px solid ;    /*tạo độ dày đường viền cho 2 nút OK và Cancel */
+                border-radius: 4px;    /* Bo góc */
+                border: 2px solid ;    /* Tạo độ dày đường viền cho 2 nút OK và Cancel */
                 background-color: #f9f9f9;
             }
-            QPushButton:hover {   /*sẽ auto kích hoạt khi rê chuột qua */
+            QPushButton:hover {   /* Sẽ auto kích hoạt khi rê chuột qua */
                 background-color: #fff9c4;
             }
         """)
@@ -115,7 +116,7 @@ class LoginScreen(QWidget):
                 background-color: #e74c3c; color: white; 
                 font-weight: bold; padding: 25px; border-radius: 12px; 
             }
-            QPushButton:hover { background-color: #c0392b; } /*khi user lướt qua nút,hover kích hoạt*/
+            QPushButton:hover { background-color: #c0392b; } /* Khi user lướt qua nút, hover kích hoạt */
         """)
         self.admin_btn.clicked.connect(self.handle_admin_click)
 
@@ -124,7 +125,7 @@ class LoginScreen(QWidget):
         self.sv_btn.setStyleSheet("""
             QPushButton {
                 background-color: #3498db; color: white; 
-                font-weight: bold; padding: 25px; border-radius: 12px; /*độ rộng 25*/
+                font-weight: bold; padding: 25px; border-radius: 12px; 
             }
             QPushButton:hover { background-color: #2980b9; }
         """)
@@ -147,13 +148,3 @@ class LoginScreen(QWidget):
 
     def handle_sv_click(self):
         self.login_success.emit("sv")
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    app.setStyle("Fusion")
-    login_win = LoginScreen()
-    def on_login_finished(role):
-        QMessageBox.information(login_win, "Thông báo", "Đăng nhập thành công!")
-    login_win.login_success.connect(on_login_finished)
-    login_win.show()
-    sys.exit(app.exec_())

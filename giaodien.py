@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QFont
-
+DB_NAME = "students.db"
 class StudentAppUI(QWidget):
     def __init__(self):
         super().__init__()
@@ -20,8 +20,9 @@ class StudentAppUI(QWidget):
         self.search_input.setPlaceholderText("Tìm kiếm...")
         self.search_input.setFixedWidth(360)
     
-        self.sort_combo = QComboBox()#nhờ cái này,nên nút giống như kiểu"hiện thư mục con"
-        self.sort_combo.addItems(["Sắp xếp", "ID", "Điểm", "Tên"])
+        self.sort_combo = QComboBox()
+        # Giữ nguyên tên "Họ Tên" như cũ
+        self.sort_combo.addItems(["Sắp xếp", "ID", "Họ Tên", "Điểm"])
         self.sort_combo.setStyleSheet("background-color: #ff69b4; color: white; font-size: 18px; padding: 6px;")
         
         self.excel_btn = QPushButton("Xuất Excel")
@@ -62,7 +63,7 @@ class StudentAppUI(QWidget):
         self.update_btn.setStyleSheet("background-color: #f1c40f; color: black; padding: 9px; font-size: 24px;")
         self.delete_btn.setStyleSheet("background-color: #e74c3c; color: white; padding: 9px; font-size: 24px;")
 
-        button_layout.addStretch()#dòng này để làm cho các nút ko"tham lam"chiếm hết diện tích
+        button_layout.addStretch()
         button_layout.addWidget(self.add_btn)
         button_layout.addWidget(self.update_btn)
         button_layout.addWidget(self.delete_btn)
@@ -70,23 +71,11 @@ class StudentAppUI(QWidget):
        
         main_layout.addLayout(top_bar)
         main_layout.addWidget(self.table)
-        main_layout.addSpacing(15)  #tạo khoảng cách nhỏ
+        main_layout.addSpacing(15)
         main_layout.addLayout(form_layout)
         main_layout.addLayout(button_layout)
 
         self.setLayout(main_layout)
-
-
-    def handle_search(self):
-        text = self.search_input.text()
-        print(f"Đang tìm kiếm: {text}")
-        
-    def handle_sort(self):
-        criteria = self.sort_combo.currentText()
-        print(f"Sắp xếp theo: {criteria}")
-
-    def export_to_excel(self):
-        print("Đang xuất file Excel")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
